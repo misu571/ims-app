@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -21,7 +22,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     use HasFactory, Notifiable;
 
     protected $table = 'users';
-
     protected $dateFormat = 'Y-m-d H:i:s.u';
 
     /**
@@ -96,5 +96,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function userDetail(): HasOne
+    {
+        return $this->hasOne(UserDetail::class);
     }
 }

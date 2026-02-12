@@ -24,6 +24,41 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps(6);
         });
+        Schema::create('departments', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->foreignId('entry_by')->constrained('users');
+            $table->timestamps(6);
+        });
+
+        Schema::create('designations', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->foreignId('entry_by')->constrained('users');
+            $table->timestamps(6);
+        });
+
+        Schema::create('user_details', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('gender')->nullable();
+            $table->date('dob')->nullable();
+            $table->string('religion')->nullable();
+            $table->string('blood_group')->nullable();
+            $table->longText('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('postcode')->nullable();
+            $table->string('nid_reg_id')->unique()->nullable();
+            $table->timestamp('nid_reg_verified_at')->nullable();
+            $table->string('dob_reg_id')->unique()->nullable();
+            $table->timestamp('dob_reg_verified_at')->nullable();
+            $table->date('doj');
+            $table->string('employee_type');
+            $table->string('employment_type');
+            $table->foreignId('designation_id')->constrained('designations');
+            $table->foreignId('department_id')->constrained('departments');
+            $table->timestamps(6);
+        });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
@@ -47,6 +82,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('departments');
+        Schema::dropIfExists('designations');
+        Schema::dropIfExists('user_details');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
