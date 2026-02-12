@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->foreignId('entry_by')->constrained('users');
             $table->timestamps(6);
         });
 
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->foreignId('category_id')->nullable()->constrained('categories');
             $table->foreignId('entry_by')->constrained('users');
             $table->timestamps(6);
