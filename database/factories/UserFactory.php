@@ -27,8 +27,15 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'phone' => fake()->unique()->phoneNumber(),
+            'phone_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'image' => null,
+            'is_active' => true,
+            'two_factor_secret' => null,
+            'two_factor_recovery_codes' => null,
+            'two_factor_confirmed_at' => null,
         ];
     }
 
@@ -39,6 +46,36 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the model's phone number should be unverified.
+     */
+    public function unverifiedPhone(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'phone_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the user has a profile image.
+     */
+    public function withAvatar(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'image' => fake()->imageUrl(width: 200, height: 200, category: 'people'),
         ]);
     }
 }

@@ -3,15 +3,26 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\AvatarProviders\UiAvatarsProvider;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $table = 'users';
+
+    protected $dateFormat = 'Y-m-d H:i:s.u';
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +33,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'image',
+        'is_active',
     ];
 
     /**
@@ -43,8 +57,33 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->is_active;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->image ?? (new UiAvatarsProvider)->get($this);
+    }
+
+    protected function email(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => strtolower($value),
+        );
+    }
+
+    #[Scope]
+    protected function active(Builder $query, bool $is = true): void
+    {
+        $query->where('is_active', $is);
     }
 
     /**
