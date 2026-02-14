@@ -24,6 +24,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps(6);
         });
+
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
@@ -41,6 +42,7 @@ return new class extends Migration
         Schema::create('user_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->string('uid')->unique();
             $table->string('gender')->nullable();
             $table->date('dob')->nullable();
             $table->string('religion')->nullable();
@@ -57,6 +59,20 @@ return new class extends Migration
             $table->string('employment_type');
             $table->foreignId('designation_id')->constrained('designations');
             $table->foreignId('department_id')->constrained('departments');
+            $table->timestamps(6);
+        });
+
+        Schema::create('suppliers', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique()->nullable();
+            $table->timestamp('email_verified_at', 6)->nullable();
+            $table->string('phone')->unique();
+            $table->timestamp('phone_verified_at', 6)->nullable();
+            $table->string('image')->nullable();
+            $table->string('gender')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->foreignId('entry_by')->constrained('users');
             $table->timestamps(6);
         });
 
@@ -85,6 +101,7 @@ return new class extends Migration
         Schema::dropIfExists('departments');
         Schema::dropIfExists('designations');
         Schema::dropIfExists('user_details');
+        Schema::dropIfExists('suppliers');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
