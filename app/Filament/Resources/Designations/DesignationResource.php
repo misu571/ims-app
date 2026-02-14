@@ -21,9 +21,9 @@ class DesignationResource extends Resource
 {
     protected static ?string $model = Designation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedIdentification;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Manpower';
+    protected static string|UnitEnum|null $navigationGroup = 'Employee details';
 
     protected static ?string $recordTitleAttribute = 'name';
 
