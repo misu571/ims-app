@@ -21,9 +21,9 @@ class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Manpower';
+    protected static string|UnitEnum|null $navigationGroup = 'Employee details';
 
     protected static ?string $recordTitleAttribute = 'name';
 
