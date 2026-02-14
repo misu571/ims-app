@@ -25,6 +25,29 @@ return new class extends Migration
             $table->foreignId('entry_by')->constrained('users');
             $table->timestamps(6);
         });
+
+        Schema::create('units', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('symbol');
+            $table->foreignId('entry_by')->constrained('users');
+            $table->timestamps(6);
+        });
+
+        Schema::create('product_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->foreignId('entry_by')->constrained('users');
+            $table->timestamps(6);
+        });
+
+        Schema::create('payment_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->boolean('is_active')->default(true);
+            $table->foreignId('entry_by')->constrained('users');
+            $table->timestamps(6);
+        });
     }
 
     /**
@@ -34,5 +57,8 @@ return new class extends Migration
     {
         Schema::dropIfExists('brands');
         Schema::dropIfExists('categories');
+        Schema::dropIfExists('units');
+        Schema::dropIfExists('product_types');
+        Schema::dropIfExists('payment_types');
     }
 };
