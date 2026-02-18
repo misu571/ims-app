@@ -25,6 +25,8 @@ class DepartmentResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Employee details';
 
+    protected static ?int $navigationSort = 52;
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
@@ -54,7 +56,8 @@ class DepartmentResource extends Resource
                     ->searchable(),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

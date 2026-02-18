@@ -136,7 +136,8 @@ class SupplierResource extends Resource
                     ->label('Status'),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

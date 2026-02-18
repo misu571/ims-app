@@ -28,6 +28,8 @@ class CategoryResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Product details';
 
+    protected static ?int $navigationSort = 23;
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
@@ -67,7 +69,8 @@ class CategoryResource extends Resource
                     ->searchable(),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

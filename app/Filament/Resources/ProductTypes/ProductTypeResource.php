@@ -25,6 +25,10 @@ class ProductTypeResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Product details';
 
+    protected static ?string $modelLabel = 'Type';
+
+    protected static ?int $navigationSort = 24;
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
@@ -54,7 +58,8 @@ class ProductTypeResource extends Resource
                     ->searchable(),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
