@@ -2,10 +2,16 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
-use Filament\Forms\Components\{FileUpload, Select, Textarea, TextInput};
-use Filament\Schemas\Components\{Grid, Section};
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 
 class ProductForm
 {
@@ -20,31 +26,29 @@ class ProductForm
             ->required();
         $costField = TextInput::make('cost')
             ->numeric()
-            ->prefix('৳')
+            ->prefixIcon(Heroicon::CurrencyBangladeshi)
             ->required();
         $reorderField = TextInput::make('reorder')
             ->label('Re-order lavel')
             ->integer()
             ->step(1)
             ->required();
-        $brandField = Select::make('brand_id')
-            ->relationship('brand', 'name')
-            ->searchable()
-            ->preload()
-            ->required();
         $categoryField = Select::make('category_id')
             ->relationship('category', 'name')
             ->searchable()
             ->preload()
             ->required();
+        $brandField = Select::make('brand_id')
+            ->relationship('brand', 'name')
+            ->searchable()
+            ->preload();
         $product_typeField = Select::make('product_type_id')
             ->relationship('productType', 'name')
             ->searchable()
-            ->preload()
-            ->required();
+            ->preload();
         $unitField = Select::make('unit_id')
             ->relationship('unit')
-            ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->name} ({$record->symbol})")
+            ->getOptionLabelFromRecordUsing(fn (Model $record): string => empty($record->symbol) ? $record->name : "{$record->name} ({$record->symbol})")
             ->searchable(['name'])
             ->preload()
             ->required();
@@ -74,8 +78,8 @@ class ProductForm
                                 ]),
                             Grid::make(4)
                                 ->schema([
-                                    $brandField,
                                     $categoryField,
+                                    $brandField,
                                     $product_typeField,
                                     $unitField,
                                 ]),

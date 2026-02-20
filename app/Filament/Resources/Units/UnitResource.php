@@ -40,7 +40,6 @@ class UnitResource extends Resource
                     ->columnSpanFull(),
                 TextInput::make('symbol')
                     ->maxLength(255)
-                    ->required()
                     ->columnSpanFull(),
             ]);
     }
@@ -58,7 +57,8 @@ class UnitResource extends Resource
                     ->alignment(Alignment::End),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('symbol'),
+                TextColumn::make('symbol')
+                    ->placeholder('--'),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')
                     ->searchable()

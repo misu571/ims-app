@@ -17,12 +17,17 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class PaymentTypeResource extends Resource
 {
     protected static ?string $model = PaymentType::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Other details';
+
+    protected static ?int $navigationSort = 42;
 
     protected static ?string $recordTitleAttribute = 'name';
 

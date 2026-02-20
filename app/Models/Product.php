@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, MorphOne, MorphMany};
 
 class Product extends Model
 {
+    use SoftDeletes;
+    
     protected $table = 'products';
     protected $dateFormat = 'Y-m-d H:i:s.u';
 

@@ -28,7 +28,7 @@ class CategoryResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Product details';
 
-    protected static ?int $navigationSort = 23;
+    protected static ?int $navigationSort = 22;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -65,7 +65,7 @@ class CategoryResource extends Resource
                     ->searchable(),
                 TextColumn::make('parentCategory.name')
                     ->label('Parent category')
-                    ->default('--')
+                    ->placeholder('--')
                     ->searchable(),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')

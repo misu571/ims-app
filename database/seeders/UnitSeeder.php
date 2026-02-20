@@ -14,6 +14,7 @@ class UnitSeeder extends Seeder
     public function run(): void
     {
         $array = [
+            ['name' => "Piece", 'symbol' => null],
             ['name' => "Centimeter", 'symbol' => "cm"],
             ['name' => "Meter", 'symbol' => "m"],
             ['name' => "Kilometer", 'symbol' => "km"],
