@@ -27,6 +27,7 @@ class Product extends Model
         'category_id',
         'product_type_id',
         'unit_id',
+        'supplier_id',
         'entry_by',
     ];
 

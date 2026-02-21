@@ -51,6 +51,11 @@ class ProductForm
             ->searchable(['name'])
             ->preload()
             ->required();
+        $supplierField = Select::make('supplier_id')
+            ->relationship('supplier', 'name')
+            ->searchable()
+            ->preload()
+            ->required();
         $descriptionField = Textarea::make('description')
             ->rows(3);
         $imagesComponent = FileUpload::make('images')
@@ -77,10 +82,11 @@ class ProductForm
                                     $product_typeField,
                                     $unitField,
                                 ]),
-                            Grid::make(6)
+                            Grid::make(12)
                                 ->schema([
-                                    $costField->columnSpan(4),
+                                    $costField->columnSpan(3),
                                     $reorderField->columnSpan(2),
+                                    $supplierField->columnSpan(7),
                                 ]),
                             $descriptionField,
                         ])->columnSpan(6),

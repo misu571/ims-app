@@ -54,6 +54,8 @@ class ProductsTable
                     ->label('Type')
                     ->placeholder('--')
                     ->searchable(),
+                TextColumn::make('supplier.name')
+                    ->searchable(),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')
                     ->searchable()
