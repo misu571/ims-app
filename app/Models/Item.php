@@ -16,10 +16,6 @@ class Item extends Model
         'quantity',
     ];
 
-    // protected static function booted(): void
-    // {
-    // }
-
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);

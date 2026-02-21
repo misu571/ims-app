@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('trx_id')->unique();
             $table->date('trx_date');
             $table->string('trx_type');
-            $table->bigInteger('total_item')->unsigned();
-            $table->decimal('total_price', 12)->unsigned();
+            $table->bigInteger('total_item')->unsigned()->default(0);
+            $table->decimal('total_price', 12)->unsigned()->default(0);
             $table->string('status');
             $table->foreignId('validate_by')->nullable()->constrained('users');
             $table->timestamp('validate_at', 6)->nullable();

@@ -5,9 +5,9 @@ namespace App\Filament\Resources\Transactions;
 use App\Enums\Status;
 use App\Enums\TransactionType;
 use App\Filament\Resources\Transactions\Pages\ManageTransactions;
+use App\Models\Inventory;
 use App\Models\Transaction;
 use BackedEnum;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
@@ -17,15 +17,17 @@ use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontFamily;
+use Filament\Support\Enums\TextSize;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use UnitEnum;
 
 class TransactionResource extends Resource
 {
@@ -51,17 +53,26 @@ class TransactionResource extends Resource
                     ->compact()
                     ->schema([
                         Select::make('product_id')
-                            ->relationship('product', 'name')
+                            ->relationship(
+                                name: 'product',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn (Builder $query) => $query
+                                    ->join('inventories', 'products.id', 'inventories.product_id')
+                                    ->where('inventories.stock', '>', 0)
+                            )
                             ->getOptionLabelFromRecordUsing(fn (Model $record): string => "[{$record->code}] {$record->name}")
                             ->searchable(['code', 'name'])
                             ->preload()
                             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                            ->live()
                             ->required()
                             ->columnSpan(5),
                         TextInput::make('quantity')
+                            ->placeholder(fn (Get $get): string => 'Stock: ' . (empty($get('product_id')) ? '--' : Inventory::where('product_id', $get('product_id'))->first()->stock))
                             ->integer()
                             ->step(1)
                             ->minValue(1)
+                            ->maxValue(fn (Get $get): int => empty($get('product_id')) ? 1 : Inventory::where('product_id', $get('product_id'))->first()->stock)
                             ->required()
                             ->columnSpan(2),
                     ])
@@ -133,15 +144,29 @@ class TransactionResource extends Resource
                     ->label('Date')
                     ->date()
                     ->sortable(),
-                TextColumn::make('trx_type')
-                    ->label('Type')
-                    ->searchable(),
                 TextColumn::make('total_item')
                     ->sortable(),
                 TextColumn::make('total_price')
+                    ->label('Total value')
                     ->sortable(),
-                TextColumn::make('status')
+                TextColumn::make('trx_type')
+                    ->label('Type')
+                    ->size(TextSize::Large)
                     ->badge()
+                    ->colors([
+                        'warning' => TransactionType::Receipt,
+                        'success' => TransactionType::Sale,
+                    ])
+                    ->searchable(),
+                TextColumn::make('status')
+                    ->size(TextSize::Large)
+                    ->badge()
+                    ->colors([
+                        'gray' => Status::PurchasePending,
+                        'success' => Status::PurchaseApproved,
+                        'danger' => Status::Rejected,
+                        'success' => Status::Sold,
+                    ])
                     ->searchable(),
                 TextColumn::make('validateBy.name')
                     ->label('Validate by')
@@ -172,11 +197,17 @@ class TransactionResource extends Resource
                 ViewAction::make()
                     ->modalHeading('View transaction')
                     ->modalWidth(Width::ThreeExtraLarge),
-                EditAction::make()
-                    ->hidden(fn (Model $record): bool => $record->trx_type == TransactionType::Sale)
-                    ->modalHeading('Edit transaction')
-                    ->modalWidth(Width::ThreeExtraLarge)
-                    ->databaseTransaction(),
+                // EditAction::make()
+                //     ->hidden(fn (Model $record): bool => $record->trx_type == TransactionType::Sale)
+                //     ->modalHeading('Edit transaction')
+                //     ->modalWidth(Width::ThreeExtraLarge)
+                //     ->databaseTransaction()
+                //     ->after(function (Model $record) {
+                //         $totalItem = array_sum(array_column($record->items->toArray(), 'quantity'));
+                //         $totalPrice = array_sum(array_map(fn ($item) => bcmul($item['quantity'], Product::find($item['product_id'])->cost, 2), $record->items->toArray()));
+                        
+                //         $record->update(['total_item' => $totalItem, 'total_price' => $totalPrice]);
+                //     }),
             ]);
     }
 

@@ -55,6 +55,6 @@ class Transaction extends Model
 
     public function items(): HasMany
     {
-        return $this->hasMany(Item::class)->chaperone();
+        return $this->hasMany(Item::class);
     }
 }

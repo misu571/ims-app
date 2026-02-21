@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Inventories;
 
+use App\Enums\Status;
+use App\Enums\TransactionType;
 use App\Filament\Resources\Inventories\Pages\ManageInventories;
 use App\Models\Inventory;
+use App\Models\Transaction;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -20,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryResource extends Resource
 {
     protected static ?string $model = Inventory::class;
+
+    protected static ?string $transactionModel = Transaction::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquaresPlus;
 
@@ -105,6 +110,7 @@ class InventoryResource extends Resource
                     ->tableIcon(Heroicon::OutlinedShoppingBag)
                     ->modalHeading(fn (Model $record): string => "Place order for {$record->product->name}")
                     ->modalWidth(Width::Medium)
+                    ->databaseTransaction()
                     ->schema([
                         TextInput::make('quantity')
                             ->integer()
@@ -118,6 +124,21 @@ class InventoryResource extends Resource
                         $reorder = $totalStock <= $record->product->reorder;
 
                         $record->update(['stock' => $totalStock, 'stock_value' => $totalStockValue, 'can_reorder' => $reorder]);
+                        self::$transactionModel::create([
+                            'trx_id' => uniqid(),
+                            'trx_date' => now(),
+                            'total_item' => $data['quantity'],
+                            'total_price' => bcmul($record->product->cost, $data['quantity'], 2),
+                            'trx_type' => TransactionType::Receipt,
+                            'status' => Status::PurchasePending,
+                            'entry_by' => auth('web')->id(),
+                        ]);
+
+                        // Mail::to($this->client)
+                        //     ->send(new GenericEmail(
+                        //         subject: $data['subject'],
+                        //         body: $data['body'],
+                        //     ));
                     }),
             ]);
     }
