@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use Filament\Actions\{DeleteAction, EditAction, RestoreAction};
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontFamily;
@@ -12,7 +12,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Filament\Actions\{DeleteAction, EditAction, RestoreAction};
 
 class ProductsTable
 {

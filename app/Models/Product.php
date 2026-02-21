@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, MorphOne, MorphMany};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasOne, MorphOne, MorphMany};
 
 class Product extends Model
 {
@@ -60,6 +60,16 @@ class Product extends Model
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    public function inventory(): HasOne
+    {
+        return $this->hasOne(Inventory::class);
     }
 
     public function images(): MorphMany
