@@ -19,6 +19,7 @@ class ProductsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->deferLoading()
             ->columns([
                 TextColumn::make('index')
                     ->label('SL#')
@@ -53,8 +54,6 @@ class ProductsTable
                 TextColumn::make('productType.name')
                     ->label('Type')
                     ->placeholder('--')
-                    ->searchable(),
-                TextColumn::make('supplier.name')
                     ->searchable(),
                 TextColumn::make('entryBy.name')
                     ->label('Entry by')

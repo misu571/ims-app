@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories');
             $table->foreignId('product_type_id')->nullable()->constrained('product_types');
             $table->foreignId('unit_id')->constrained('units');
-            $table->foreignId('supplier_id')->constrained('suppliers');
             $table->foreignId('entry_by')->constrained('users');
             $table->softDeletes();
             $table->timestamps(6);

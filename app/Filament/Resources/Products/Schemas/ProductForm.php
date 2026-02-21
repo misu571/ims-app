@@ -11,7 +11,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
 
 class ProductForm
 {
@@ -52,11 +51,6 @@ class ProductForm
             ->searchable(['name'])
             ->preload()
             ->required();
-        $supplierField = Select::make('supplier_id')
-            ->relationship('supplier', 'name')
-            ->searchable()
-            ->preload()
-            ->required();
         $descriptionField = Textarea::make('description')
             ->rows(3);
         $imagesComponent = FileUpload::make('images')
@@ -83,11 +77,10 @@ class ProductForm
                                     $product_typeField,
                                     $unitField,
                                 ]),
-                            Grid::make(12)
+                            Grid::make(6)
                                 ->schema([
-                                    $costField->columnSpan(3),
+                                    $costField->columnSpan(4),
                                     $reorderField->columnSpan(2),
-                                    $supplierField->columnSpan(7),
                                 ]),
                             $descriptionField,
                         ])->columnSpan(6),

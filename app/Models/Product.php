@@ -27,7 +27,6 @@ class Product extends Model
         'category_id',
         'product_type_id',
         'unit_id',
-        'supplier_id',
         'entry_by',
     ];
 
@@ -61,11 +60,6 @@ class Product extends Model
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
-    }
-
-    public function supplier(): BelongsTo
-    {
-        return $this->belongsTo(Supplier::class);
     }
 
     public function images(): MorphMany

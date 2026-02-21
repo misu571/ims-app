@@ -25,9 +25,9 @@ class PaymentTypeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Other details';
+    protected static string|UnitEnum|null $navigationGroup = 'Transaction details';
 
-    protected static ?int $navigationSort = 42;
+    protected static ?int $navigationSort = 12;
 
     protected static ?string $recordTitleAttribute = 'name';
 
