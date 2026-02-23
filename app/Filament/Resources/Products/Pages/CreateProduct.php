@@ -22,4 +22,9 @@ class CreateProduct extends CreateRecord
             'stock_value' => 0,
         ]);
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
