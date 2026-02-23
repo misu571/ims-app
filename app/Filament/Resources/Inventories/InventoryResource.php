@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\Inventories;
 
-use App\Enums\Status;
+use App\Enums\InventoryStatus;
+use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use App\Filament\Resources\Inventories\Pages\ManageInventories;
 use App\Models\Inventory;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\TextSize;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -88,6 +90,15 @@ class InventoryResource extends Resource
                     ->label('Re-order lavel')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('status')
+                    ->size(TextSize::Large)
+                    ->badge()
+                    ->colors([
+                        'success' => InventoryStatus::Available,
+                        'warning' => InventoryStatus::Low,
+                        'danger' => InventoryStatus::Out,
+                    ])
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -100,12 +111,11 @@ class InventoryResource extends Resource
             ->filters([
                 //
             ])
-            ->defaultSort('can_reorder', 'desc')
+            // ->defaultSort('can_reorder', 'desc')
             ->recordAction(null)
             ->recordUrl(null)
             ->recordActions([
                 Action::make('order')
-                    ->visible(fn (Model $record): bool => $record->can_reorder)
                     ->color('warning')
                     ->tableIcon(Heroicon::OutlinedShoppingBag)
                     ->modalHeading(fn (Model $record): string => "Place order for {$record->product->name}")
@@ -121,16 +131,20 @@ class InventoryResource extends Resource
                     ->action(function (Model $record, array $data) {
                         $totalStock = bcadd($record->stock, $data['quantity']);
                         $totalStockValue = bcmul($record->product->cost, $totalStock, 2);
-                        $reorder = $totalStock <= $record->product->reorder;
+                        $status = match (true) {
+                            $totalStock < 1 => InventoryStatus::Out,
+                            $totalStock > 0 && $totalStock <= $record->product->reorder => InventoryStatus::Low,
+                            default => InventoryStatus::Available,
+                        };
 
-                        $record->update(['stock' => $totalStock, 'stock_value' => $totalStockValue, 'can_reorder' => $reorder]);
+                        $record->update(['stock' => $totalStock, 'stock_value' => $totalStockValue, 'status' => $status]);
                         self::$transactionModel::create([
                             'trx_id' => uniqid(),
                             'trx_date' => now(),
                             'total_item' => $data['quantity'],
                             'total_price' => bcmul($record->product->cost, $data['quantity'], 2),
                             'trx_type' => TransactionType::Receipt,
-                            'status' => Status::PurchasePending,
+                            'status' => TransactionStatus::PurchasePending,
                             'entry_by' => auth('web')->id(),
                         ]);
 

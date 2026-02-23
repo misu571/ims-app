@@ -37,7 +37,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products');
             $table->bigInteger('stock')->unsigned()->default(0);
             $table->decimal('stock_value', 10)->unsigned();
-            $table->boolean('can_reorder')->default(true);
+            $table->string('status');
             $table->timestamps(6);
         });
     }

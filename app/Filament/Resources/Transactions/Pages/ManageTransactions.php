@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\Transactions\Pages;
 
-use App\Enums\{Status, TransactionType};
+use App\Enums\{TransactionStatus, TransactionType};
+use App\Enums\InventoryStatus;
 use App\Filament\Resources\Transactions\TransactionResource;
 use App\Models\Item;
 use App\Models\Product;
@@ -30,7 +31,7 @@ class ManageTransactions extends ManageRecords
                     $data['trx_id'] = uniqid();
                     $data['trx_date'] = now();
                     $data['trx_type'] = TransactionType::Sale;
-                    $data['status'] = Status::Sold;
+                    $data['status'] = TransactionStatus::Sold;
                     $data['entry_by'] = auth('web')->id();
 
                     return $data;
@@ -45,9 +46,13 @@ class ManageTransactions extends ManageRecords
                             $itemCollection = Item::find($item['id']);
                             $totalStock = bcsub($itemCollection->product->inventory->stock, $item['quantity']);
                             $totalStockValue = bcmul($itemCollection->product->cost, $totalStock, 2);
-                            $reorder = $totalStock <= $itemCollection->product->reorder;
+                            $status = match (true) {
+                                $totalStock < 1 => InventoryStatus::Out,
+                                $totalStock > 0 && $totalStock <= $itemCollection->product->reorder => InventoryStatus::Low,
+                                default => InventoryStatus::Available,
+                            };
 
-                            $itemCollection->product->inventory->update(['stock' => $totalStock, 'stock_value' => $totalStockValue, 'can_reorder' => $reorder]);
+                            $itemCollection->product->inventory->update(['stock' => $totalStock, 'stock_value' => $totalStockValue, 'status' => $status]);
                         },
                         $record->items->toArray()
                     );

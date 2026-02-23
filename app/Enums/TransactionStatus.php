@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum Status: string implements HasLabel
+enum TransactionStatus: string implements HasLabel
 {
     case PurchasePending = 'purchase_pending';
     case PurchaseApproved = 'purchase_approved';

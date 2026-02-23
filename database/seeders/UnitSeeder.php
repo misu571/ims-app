@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\InventoryStatus;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -96,8 +97,8 @@ class UnitSeeder extends Seeder
         ]);
 
         \App\Models\Inventory::insert([
-            ['product_id' => 1, 'stock' => 0, 'stock_value' => 0, 'created_at' => now(), 'updated_at' => now()],
-            ['product_id' => 2, 'stock' => 0, 'stock_value' => 0, 'created_at' => now(), 'updated_at' => now()],
+            ['product_id' => 1, 'stock' => 0, 'stock_value' => 0, 'status' => InventoryStatus::Out, 'created_at' => now(), 'updated_at' => now()],
+            ['product_id' => 2, 'stock' => 0, 'stock_value' => 0, 'status' => InventoryStatus::Out, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

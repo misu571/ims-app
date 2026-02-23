@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\{Status, TransactionType};
+use App\Enums\{TransactionStatus, TransactionType};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
@@ -39,7 +39,7 @@ class Transaction extends Model
             'trx_date' => 'datetime',
             'validate_at' => 'datetime',
             'trx_type' => TransactionType::class,
-            'status' => Status::class,
+            'status' => TransactionStatus::class,
         ];
     }
 

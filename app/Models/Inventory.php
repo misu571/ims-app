@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Scope;
-use Illuminate\Database\Eloquent\Builder;
+use App\Enums\InventoryStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -21,20 +20,14 @@ class Inventory extends Model
         'product_id',
         'stock',
         'stock_value',
-        'can_reorder',
+        'status',
     ];
 
     protected function casts(): array
     {
         return [
-            'can_reorder' => 'boolean',
+            'status' => InventoryStatus::class,
         ];
-    }
-
-    #[Scope]
-    protected function reorder(Builder $query, bool $is = true): void
-    {
-        $query->where('can_reorder', $is);
     }
 
     public function product(): BelongsTo

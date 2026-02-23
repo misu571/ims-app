@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Transactions;
 
-use App\Enums\Status;
+use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use App\Filament\Resources\Transactions\Pages\ManageTransactions;
 use App\Models\Inventory;
@@ -162,10 +162,10 @@ class TransactionResource extends Resource
                     ->size(TextSize::Large)
                     ->badge()
                     ->colors([
-                        'gray' => Status::PurchasePending,
-                        'success' => Status::PurchaseApproved,
-                        'danger' => Status::Rejected,
-                        'success' => Status::Sold,
+                        'gray' => TransactionStatus::PurchasePending,
+                        'success' => TransactionStatus::PurchaseApproved,
+                        'danger' => TransactionStatus::Rejected,
+                        'success' => TransactionStatus::Sold,
                     ])
                     ->searchable(),
                 TextColumn::make('validateBy.name')
